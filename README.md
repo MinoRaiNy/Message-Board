@@ -141,6 +141,10 @@ Welcome to Symfony <version>
 Your application is now ready. You can start working on it at:
 /usr/share/nginx/html/
 ```
+P.S 如果畫面噴錯請清除快取
+```
+php bin/console cache:clear
+```
 
 ### Step 8. 建立資料表，將已經建好的 migrations 寫進資料庫
 ```
@@ -158,6 +162,6 @@ http://<ServerIP>/message
 
 
 
-#Copyright © 2020 MinoRaiNy
+### Copyright © 2020 MinoRaiNy
     
 
