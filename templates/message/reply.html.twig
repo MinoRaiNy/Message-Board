@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+{{ show_message }}
+<form method="post" action="/message/goreply">
+    <input type="text" name="enter" style="width:100px;" placeholder="Enter Reply">
+    <input type="hidden" name="postid" value="{{ reply_id }}">
+    <input type="submit" name="reply" class="bot1" value="新增">
+</form>
+{% endblock %}
