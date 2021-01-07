@@ -71,22 +71,25 @@ docker-image/
 │   └── my.cnf   
 │
 ├── php-fpm/
+│   ├── composer.sh
+│   ├── Dockerfile
 │   ├── php.ini
+│   ├── supervisord.conf
 │   └── www.conf
 │
 └─── nginx/
     └── default.conf
 ```
 
-之後在 docker/ 底下執行指令
+之後在 docker-image/ 底下執行指令
 
 ### Step 1. 將所有容器依照 docker-compose.yml 建立起來
 ```
-docker-compose up -d
+docker-compose up -d --build
 ```
 將會看到訊息:
 ```
-Creating network "docker_symfony" with the default driver
+Creating network "docker-image_symfony" with the default driver
 Creating mysql ... done
 Creating php-fpm ... done
 Creating nginx   ... done
@@ -98,41 +101,14 @@ docker-compose ps
 ```
 將會看到訊息:
 ```
- Name                Command               State                 Ports
+ Name                Command               State                 Ports              
 ------------------------------------------------------------------------------------
 mysql     docker-entrypoint.sh mysqld      Up      0.0.0.0:3306->3306/tcp, 33060/tcp
-nginx     /docker-entrypoint.sh ngin ...   Up      0.0.0.0:80->80/tcp
-php-fpm   docker-php-entrypoint php-fpm    Up      0.0.0.0:9000->9000/tcp
+nginx     /docker-entrypoint.sh ngin ...   Up      0.0.0.0:80->80/tcp               
+php-fpm   /usr/bin/supervisord -c /e ...   Up      0.0.0.0:9000->9000/tcp
 ```
 
-### Step 3. 進入 php-fpm 容器
-```
-docker exec -it php-fpm bash
-
-cd /usr/share/nginx/html
-```
-
-### Step 4. 安裝 composer
-```
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-php -r "if (hash_file('sha384', 'composer-setup.php') === '756890a4488ce9024fc62c56153228907f1545c228516cbf63f885e036d37e9a59d27d63f46af1d4d07ee0f76181c7d3') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-php composer-setup.php --install-dir=/bin --filename=composer
-php -r "unlink('composer-setup.php');"
-```
-> 若無法安裝請參考 "https://getcomposer.org/download/" 最新發布版安裝
-
-### Step 5. 安裝 zip unzip
-```
-apt update
-apt install zip unzip
-```
-
-### Step 6. 依照 composer.json 建立vendor
-```
-composer install
-```
-
-### Step 7. 打開 Client 瀏覽器確認是否正確顯示 Symfony 歡迎畫面
+### Step 3. 打開 Client 瀏覽器確認是否正確顯示 Symfony 歡迎畫面
 ```
 http://<ServerIP>
 ```
@@ -143,25 +119,13 @@ Welcome to Symfony <version>
 Your application is now ready. You can start working on it at:
 /usr/share/nginx/html/
 ```
-P.S 如果畫面噴錯請清除快取
-```
-php bin/console cache:clear
-```
 
-### Step 8. 建立資料表，將已經建好的 migrations 寫進資料庫
-```
-php bin/console doctrine:migrations:migrate
-
- WARNING! You are about to execute a database migration that could result in schema changes and data loss. Are you sure you wish to continue? (yes/no) [yes]:
- > yes
-
-```
-
-### Step 9. 開啟 Client 瀏覽器，開始使用留言板吧！
+### Step 4. 開啟 Client 瀏覽器，開始使用留言板吧！
 ```
 http://<ServerIP>/message
 ```
 
+> 若無法執行composer安裝腳本請參考 "https://getcomposer.org/download/" 最新發布版安裝
 
 
 ### Copyright © 2020 MinoRaiNy

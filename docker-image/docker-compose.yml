@@ -13,8 +13,9 @@ services:
     networks:
       - symfony
   php-fpm:
-    build: ./php-fpm
     container_name: php-fpm
+    privileged: true
+    build: ./php-fpm
     ports:
       - "9000:9000"
     volumes:
